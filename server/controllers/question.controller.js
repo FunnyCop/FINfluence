@@ -1,5 +1,5 @@
-const Question = require("../models/question.model");
-const Answer = require("../models/answer.model")
+const { Question } = require( "../models/question.model" )
+const { Answer } = require("../models/answer.model")
 
 
 module.exports.findAllQuestions = (req,res)=>{
@@ -14,15 +14,12 @@ module.exports.findAllQuestions = (req,res)=>{
         })  
 }
 
-module.exports.createNewQuestion = (req,res)=>{
-    Question.create(req.body)
-        .then(newQuestionObj=>{
-            console.log("bkend create question res-->", res)
-            res.json({results: newQuestionObj})
-        })
-        .catch(err=>{
-            res.json({err:err})
-        })   
+module.exports.createNewQuestion = ( req,res ) => {
+
+    Question.create( req.body )
+        .then( question => res.json( question ) )
+        .catch( err => res.json( err ) )
+
 }
 
 module.exports.updateQuestion = (req, res) => {
@@ -39,15 +36,20 @@ module.exports.updateQuestion = (req, res) => {
         });
 }
 
-module.exports.pushAnswer = (req, res) => { 
-    Question.findByIdAndUpdate( { _id:req.params.id },
-        { $push: { answers: req.body.newAnswer } }, {new: true} )
-        .then(pushedAnswer => {
-            res.json( { pushedAnswer } )
-        })
-        .catch(err => {
-            res.json( { err } )
-        });
+module.exports.pushAnswer = async ( req, res ) => {
+
+    const answer = await Answer.create( req.body )
+
+    Question.findByIdAndUpdate(
+
+        req.params.id,
+        { $push: { answers: answer._id } },
+        { new: true }
+
+    ).populate( "answers" )
+        .then( question => res.json( question ) )
+        .catch( err => res.json( err ) )
+
 }
 
 // module.exports.pushAnswer = async ( req, res ) => {
