@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 const { secret } = require("../config/jwt");
-const User = require("../models/user.model");
+const { User } = require("../models/user.model");
 
 
 class UserController {
