@@ -1,4 +1,4 @@
-const QuestionController = require('../controllers/question.controller')
+const QuestionController = require( "../controllers/question.controller" )
 
 
 module.exports = app => {

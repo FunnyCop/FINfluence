@@ -1,9 +1,9 @@
-const AnswerController = require('../controllers/answer.controller')
+const AnswerController = require( "../controllers/answer.controller" )
 
 
 module.exports = app => {
 
-    app.post('/api/answer', AnswerController.createNewAnswer)
+    app.post( "/api/answer", AnswerController.createNewAnswer )
 
     app.get( "/api/answers", AnswerController.findAllAnswers )
 
