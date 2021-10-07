@@ -59,7 +59,7 @@ module.exports.pushAnswer = (req, res) => {
 //         .then( q => res.json( q ) )
 //         .catch( err => res.json( err ) )
 // }
-//above --> if I put { $push: { answers: newAnswer_d }}, does not like, if I just put newAnswer mongoose generates a newAnswer _id, 
+//above --> if I put { $push: { answers: newAnswer_id }}, does not like, if I just put newAnswer mongoose generates a newAnswer _id, 
 // but when I use the Answer route localhost:8000/api/answer/:id it returns 
 //{
 //    "results": null
