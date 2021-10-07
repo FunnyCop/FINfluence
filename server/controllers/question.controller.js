@@ -1,20 +1,10 @@
 const { Question } = require( "../models/question.model" )
 const { Answer } = require( "../models/answer.model" )
 
-
-module.exports.findAllQuestions = (req,res)=>{
-    Question.find()
-        .then(allQuestions=>{
-            console.log("bkend get all questions res-->", res)
-            res.json({results: allQuestions})
-        })
-        .catch(err=>{
-            res.json({err:err})
-            
-        })  
-}
-
-module.exports.createNewQuestion = ( req,res ) => {
+/**
+ * Create New Question - POST - /api/question
+ */
+module.exports.createNewQuestion = ( req, res ) => {
 
     Question.create( req.body )
         .then( question => res.json( question ) )
@@ -22,20 +12,31 @@ module.exports.createNewQuestion = ( req,res ) => {
 
 }
 
-module.exports.updateQuestion = (req, res) => {
-    Question.findOneAndUpdate(
-        { _id: req.params.id },
-        req.body,
-        { new: true, runValidators: true }
-    )
-        .then(updatedQuestion => {
-            res.json({ message: 'question updated-->', updatedQuestion })
-        })
-        .catch(err => {
-            res.json({ message: 'Something went wrong', error: err })
-        });
+/**
+ * Find All Questions - GET - /api/questions
+ */
+module.exports.findAllQuestions = ( req, res ) => {
+
+    Question.find().populate( "answers" )
+        .then( questions => res.json( questions ) )
+        .catch( err => res.json( err ) )
+
 }
 
+/**
+ * Find One Question - GET - /api/question/:id
+ */
+module.exports.findOneQuestion = ( req,res ) => {
+
+    Question.findById( req.params.id )
+        .then( question => res.json( question ) )
+        .catch( err => res.json( err ) )
+
+}
+
+/**
+ * Add Answer to Question - PUT - /api/question/:id
+ */
 module.exports.pushAnswer = async ( req, res ) => {
 
     const answer = await Answer.create( req.body )
@@ -45,6 +46,47 @@ module.exports.pushAnswer = async ( req, res ) => {
         req.params.id,
         { $push: { answers: answer._id } },
         { new: true }
+
+    ).populate( "answers" )
+        .then( question => res.json( question ) )
+        .catch( err => res.json( err ) )
+
+}
+
+/**
+ * Delete One Question - DELETE - /api/question/:id
+ */
+module.exports.deleteOneQuestion = async ( req, res ) => {
+
+    const question = await Question.findByIdAndDelete( req.params.id ).exec()
+
+    Answer.deleteMany( { _id: { $in: question.answers } } )
+        .then( () => res.json( { message: "Deleted Question Successfully" } ) )
+        .catch( err => res.json( err ) )
+
+}
+
+/**
+ * Find Answers for Question - GET - /api/question/answers/:id
+ */
+module.exports.findAnswersToThisQuestion = ( req, res ) => {
+
+    Question.findById( req.params.id ).populate( "answers" )
+        .then( question => res.json( question.answers ) )
+        .catch( err => res.json( err ) )
+
+}
+
+/**
+ * Update One Question - PUT - /api/question/update/:id
+ */
+module.exports.updateQuestion = ( req, res ) => {
+
+    Question.findByIdAndUpdate(
+
+        req.params.id,
+        req.body,
+        { new: true, runValidators: true }
 
     ).populate( "answers" )
         .then( question => res.json( question ) )
@@ -70,40 +112,5 @@ module.exports.pushAnswer = async ( req, res ) => {
 //after dropping db schema, I also tried:
 // const newAnswer = await Answer.create(req.body)
 // but I am returned an error that Answer.create is not a function on the backend
-
-module.exports.findAnswersToThisQuestion = (req, res) =>{
-    Question.findById({_id: req.params.id}).populate("answers")
-        .then(questWithAnswers=>{
-            console.log("this is the populated answer array to this question")
-            res.json({results: questWithAnswers})
-        })
-        .catch(err=>{
-            res.json({err:err})
-        })
-}
-
-
-module.exports.findOneQuestion = ( req,res )=>{ 
-    Question.findOne( { _id:req.params.id } )
-        .then( foundQuestion=>{
-            console.log( "bkend find one question res-->", res )
-            res.json( { results: foundQuestion } )
-        })
-        .catch( err => {
-            res.json( { err:err } )
-        })
-}
-
-
-module.exports.deleteOneQuestion = (req,res)=>{
-    Question.deleteOne({_id: req.params.id})
-        .then(deletedQuestion =>{
-            console.log("bkend delete question res-->", res)
-            res.json({results: deletedQuestion})
-        })
-        .catch(err=>{
-            res.json({err:err})
-        })
-}
 
 
