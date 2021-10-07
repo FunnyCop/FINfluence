@@ -1,51 +1,46 @@
-const Answer = require("../models/answer.model");
+const { Answer } = require("../models/answer.model")
 
-module.exports.findAllAnswers = (req,res)=>{
-    Answer
-        .find()
-        .then(allAnswers=>{
-            console.log("bkend get all Answers res-->", res)
-            res.json({results: allAnswers})
-        })
-        .catch(err=>{
-            res.json({err:err})
-            
-        })   
+/**
+ * Create New Answer - POST - /api/answer
+ */
+ module.exports.createNewAnswer = ( req,res ) => {
+
+    Answer.create( req.body )
+        .then( answer => res.json( answer ) )
+        .catch( err => res.json( err ) )
+
 }
 
+/**
+ * Find All Answers - GET - /api/answers
+ */
+module.exports.findAllAnswers = ( req,res ) => {
 
-module.exports.createNewAnswer = (req,res)=>{
-    Answer.create(req.body)
-        .then(newAnswerObj=>{
-            console.log("bkend create Answer res-->", res)
-            res.json({results: newAnswerObj})
-        })
-        .catch(err=>{
-            res.json({err:err})
-        })   
+    Answer.find()
+        .then( answers => res.json( answers ) )
+        .catch( err => res.json( err ) )
+
 }
 
+/**
+ * Find One Answer - GET - /api/answer/:id
+ */
+module.exports.findOneAnswer = ( req,res ) => {
 
-module.exports.findOneAnswer = (req,res)=>{ 
-    Answer.findOne({_id:req.params.id})
-        .then(foundAnswer=>{
-            console.log("bkend find one Answer res-->", res)
-            res.json({results: foundAnswer })
-        })
-        .catch(err=>{
-            res.json({err:err})
-        })
+    Answer.findById( req.params.id )
+        .then( answer => res.json( answer ) )
+        .catch( err => res.json( err ) )
+
 }
 
+/**
+ * Delete One Answer - DELETE - /api/answer/:id
+ */
+module.exports.deleteOneAnswer = ( req,res ) => {
 
-module.exports.deleteOneAnswer = (req,res)=>{
-    Answer.deleteOne({_id: req.params.id})
-        .then(deletedAnswer =>{
-            console.log("bkend delete Answer res-->", res)
-            res.json({results: deletedAnswer})
-        })
-        .catch(err=>{
-            res.json({err:err})
-        })
+    Answer.findByIdAndDelete( req.params.id )
+        .then( answer => res.json( answer ) )
+        .catch( err => res.json( err ) )
+
 }
 

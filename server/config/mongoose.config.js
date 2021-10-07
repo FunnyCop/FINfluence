@@ -1,4 +1,4 @@
-const mongoose = require( `mongoose` )
+const mongoose = require( "mongoose" )
 const db_name = "db_fin"
 
 mongoose.connect( `mongodb://localhost/${ db_name }`, {
