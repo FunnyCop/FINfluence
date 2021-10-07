@@ -1,5 +1,5 @@
 const { Question } = require( "../models/question.model" )
-const { Answer } = require("../models/answer.model")
+const { Answer } = require( "../models/answer.model" )
 
 
 module.exports.findAllQuestions = (req,res)=>{
